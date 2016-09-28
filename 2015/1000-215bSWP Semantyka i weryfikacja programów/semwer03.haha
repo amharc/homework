@@ -1,0 +1,62 @@
+function cbrt(n : Z) : Z
+	precondition n > 0
+	var
+		i : Z
+		ii : Z
+		ki : Z
+		ski : Z
+		si : Z
+	postcondition (cbrt - 1) * (cbrt - 1) * (cbrt - 1) <= n
+	postcondition n < cbrt * cbrt * cbrt
+begin
+	i := 1
+	{ i = 1 /\ n >= 0 }
+	ii := 3
+	{ i = 1 /\ ii = 3 /\ n >= 0 }
+	ki := 3
+	{ i = 1 /\ ii = 3 /\ ki = 3 /\ n >= 0 }
+	ski := 0
+	{ i = 1 /\ ii = 3 /\ ki = 3 /\ ski = 0 /\ n >= 0 }
+	si := 0
+	{ i = 1 /\ ii = 3 /\ ki = 3 /\ ski = 0 /\ si = 0 /\ n >= 0 }
+	while ski + si + i <= n do
+	invariant i_minus_one_cubed_less_n : (i - 1) * (i - 1) * (i - 1) <= n
+	invariant si : si = 3 * i * (i - 1) / 2
+	invariant ii : ii = 6 * i - 3
+	invariant ki : ki = 3 * i * i
+	invariant ski : ski = (i - 1) * i * (2 * i - 1) / 2
+	invariant ski_si_i_i_cubed : ski + si + i = i * i * i
+	begin
+		ski := ski + ki
+		{ i * i * i <= n }
+		{ si = 3 * i * (i - 1) / 2 }
+		{ ii = 6 * i - 3 }
+		{ ki = 3 * i * i }
+		{ ski = i * (i + 1) * (2 * i + 1) / 2 }
+		{ ski + si + i = i * i * i + 3 * i * i }
+		ii := ii + 6
+		{ i * i * i <= n }
+		{ si = 3 * i * (i - 1) / 2}
+		{ ii = 6 * i + 3 }
+		{ ki = 3 * i * i }
+		{ ski = i * (i + 1) * (2 * i + 1) / 2 }
+		{ ski + si + i = i * i * i + 3 * i * i }
+		ki := ki + ii
+		{ i * i * i <= n }
+		{ si = 3 * i * (i - 1) / 2}
+		{ ii = 6 * i + 3 }
+		{ ki = 3 * (i + 1) * (i + 1) }
+		{ ski = i * (i + 1) * (2 * i + 1) / 2 }
+		{ ski + si + i = i * i * i + 3 * i * i }
+		si := si + 3 * i
+		{ i * i * i <= n }
+		{ si = 3 * (i + 1) * i / 2}
+		{ ii = 6 * i + 3 }
+		{ ki = 3 * (i + 1) * (i + 1) }
+		{ ski = i * (i + 1) * (2 * i + 1) / 2 }
+		{ ski + si + i = i * i * i + 3 * i * i + 3 * i }
+		i := i + 1
+	end
+	{ (i - 1) * (i - 1) * (i - 1) <= n /\ i * i * i > n }
+	cbrt := i
+end
